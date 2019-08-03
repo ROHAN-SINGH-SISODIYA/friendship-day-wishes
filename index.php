@@ -1,7 +1,20 @@
 <?php
+       $conn=mysqli_connect('118.185.43.122','0187cs161025','sistec','0187cs161025'); 
        $userID="";
-       if (isset($_GET['userID'])) {
-      		 $userID=$_GET["userID"];
+       if (isset($_GET['userID']))
+       {
+      		     $userID=$_GET["userID"];
+      		 	 $sql = "select *from tbl_friend where userID='$user'";
+				 $result = mysqli_query($conn, $sql);
+					if(mysqli_num_rows($result) > 0) 
+					{
+					    while($row = mysqli_fetch_assoc($result))
+					    {
+					        $name=$row["fullname"];
+					    }
+					}
+
+
        }
  ?>
 
