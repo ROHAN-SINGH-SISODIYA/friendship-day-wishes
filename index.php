@@ -1,3 +1,11 @@
+<?php
+       $userID="";
+       if (isset($_GET['userID'])) {
+      		 $userID=$_GET["userID"];
+       }
+ ?>
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -143,24 +151,12 @@ div.footer a.Cbtn-danger:hover{
                         <div class="banner-img">
                             <img src="download.jpeg" alt="Image 1">
                         </div>
-
-
-
-                        <div class="stats">
-
-                            <div>
-                                <strong>INVITED</strong> 3098
-                            </div>
-
-                            <div>
-                                <strong>JOINED</strong> 562
-                            </div>
-
-                            <div>
-                                <strong>DECLINED</strong> 182
-                            </div>
-
+                        <div id="contentSearchID">
+                        	
                         </div>
+
+
+                        
 
                         <div class="stats">
 
@@ -195,7 +191,7 @@ div.footer a.Cbtn-danger:hover{
                         </div>
 
                         <div class="footer">
-                            <a href="#" class="btn btn-success">Group Share</a>
+                            <a href="#" class="btn btn-success" data-toggle="modal" data-target="#myModal">Group Share</a>
                             <a href="#" class="Cbtn Cbtn-danger">personal Share</a>
                         </div>
                     </div>
@@ -203,5 +199,66 @@ div.footer a.Cbtn-danger:hover{
             </div>
         </div>
     </div>
+
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Modal Header</h4>
+        </div>
+        <div class="modal-body">
+          <p>Some text in the modal.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+  </div>
+</div>
 </body>
 </html>
+
+  <script type="text/javascript">
+		$(document).ready(function() {
+			var userID         = "<?php echo $userID; ?>";
+				$.ajax({
+					type: "POST",
+					url:'https://booosts.com/home/getUserInformation',     
+					data: {'userID': userID},
+					dataType: 'JSON',
+					success: function (data) {
+					var html_content = '';
+					var length = data.length;
+					if(data.length>0){
+						for(var i=0; i<length; i++){
+
+							html_content += '<div class="stats">'+
+
+                            '<div>'+
+                                ' <strong>INVITED</strong> 3098'+
+                            ' </div>'+
+
+                             '<div>'+
+                                ' <strong>JOINED</strong> 562'+
+                            ' </div>'+
+
+                            ' <div>'+
+                                ' <strong>DECLINED</strong> 182'+
+                            '</div>'+
+
+                         '</div>';
+								
+						}
+					}
+					$('#contentSearchID').html(html_content);		
+
+					}
+					
+				});
+
+		});
+
+  </script>
