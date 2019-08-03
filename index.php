@@ -1,18 +1,32 @@
 <?php
        $conn=mysqli_connect('118.185.43.122','0187cs161025','sistec','0187cs161025'); 
-       $userID="";
+       $userID="";$groupCode="";
        if (isset($_GET['userID']))
        {
       		     $userID=$_GET["userID"];
-      		 	 $sql = "select *from tbl_friend where userID='$user'";
+      		 	 $sql = "select * from tbl_friend where userID='$userID'";
+      		 	 if (isset($_GET['groupCode'])){
+      		    	 $groupCode=$_GET['groupCode'];
+      		 		 $sql = "select * from tbl_friend where groupCode='$groupCode'";
+      		 	 }
 				 $result = mysqli_query($conn, $sql);
-					if(mysqli_num_rows($result) > 0) 
-					{
-					    while($row = mysqli_fetch_assoc($result))
-					    {
-					        $name=$row["fullname"];
-					    }
+      		 	 //var_dump($sql);exit();
+				 $i=0;
+				 $rowArray = array();
+				 if (mysqli_num_rows($result)>0) {
+				 while ($row = mysqli_fetch_assoc($result)) {
+					    	$rowArray[$i]['userID']=$row['userID'];
+					    	$rowArray[$i]['userName']=$row['userName'];
+					    	$rowArray[$i]['groupCode']=$row['groupCode'];
+					    	$rowArray[$i]['group_option']=$row['group_option'];
+					    	$rowArray[$i]['img']=$row['img'];
+					    	$i++;
+
+					    }				 
 					}
+      		 	 //var_dump($rowArray);exit();
+
+
 
 
        }
@@ -164,48 +178,50 @@ div.footer a.Cbtn-danger:hover{
                             <img src="download.jpeg" alt="Image 1">
                         </div>
 
-                        <div id="contentSearchID">
-                        	
-                        </div>
+                        <?php if(count($rowArray)>0){
+                        	$u=1;
+                        	$count=0;
+                        	foreach ($rowArray as $key ) {
+                        		if($u==1){
+                        			$u=0;
+                        			echo '<div class="stats">';
+                        		}
+                        		echo '
+		 							
+		                             <div>
+		                            	<strong>'.$key['userName'].'</strong>
+		                            	<img src="images/'.$key['img'].'" alt="Image 1" style="    height: 100px">
+		                            </div>
+                        		';
+                        		$count++;
+                        		if ($count%3==0) {
+                        			$u=1;
+                        			echo '</div>';
+                        		}
+                        	}
+                        		if (($count%3)!=0) {
+                        			echo '</div>';
+                        	}
+                        }?>
 
 
                         
 
-                        <div class="stats">
 
-                            <div>
-                                <strong>INVITED</strong> 3098
-                            </div>
-
-                            <div>
-                                <strong>JOINED</strong> 562
-                            </div>
-
-                            <div>
-                                <strong>DECLINED</strong> 182
-                            </div>
-
-                        </div>
-
-                        <div class="stats">
-
-                            <div>
-                                <strong>INVITED</strong> 3098
-                            </div>
-
-                            <div>
-                                <strong>JOINED</strong> 562
-                            </div>
-
-                            <div>
-                                <strong>DECLINED</strong> 182
-                            </div>
-
-                        </div>
                         <div class="footer">
-
-                            <a href="#" class="btn btn-success" data-toggle="modal" data-target="#myModal">Group Share</a>
-                            <a href="#" class="Cbtn Cbtn-danger">personal Share</a>
+                         <?php if(count($rowArray)>0){
+                        	if($rowArray[0]['group_option']=="yes"){
+                        		echo '
+ 								<a  class="btn btn-success statusClass" data-toggle="modal"  data-groupCode="'.$rowArray[0]['groupCode'].'" data-group-option="yes">join group</a>
+                        		';
+                        	}
+                        }?>
+                            
+                            <a  class="btn btn-success statusClass" data-toggle="modal"   data-groupCode="" data-group-option="yes">create group</a>
+                            <a  class="Cbtn Cbtn-danger statusClass" data-groupCode="" data-group-option="no">Person</a>
+                        </div>
+                         <div class="footer">
+                            <a  class="btn btn-success " data-toggle="modal"   data-groupCode="" data-group-option="yes">WhAtSAPP SHARE</a>
                         </div>
                     </div>
                 </div> 
@@ -228,6 +244,8 @@ div.footer a.Cbtn-danger:hover{
 					  <div class="form-group">
 					    <label for="exampleInputEmail1">ENTER YOUR NAME</label>
 					    <input type="text" name="username" class="form-control" placeholder="Enter Name">
+					    <input type="hidden" name="groupCode" id="groupCode" value=" " class="form-control" placeholder="Enter Name">
+					    <input type="hidden" id="group_option" name="group_option" value="yes" class="form-control" placeholder="Enter Name">
 					  </div>
 					  <div class="form-group">
 					    <label for="exampleInputPassword1">PHOTO</label>
@@ -245,7 +263,8 @@ div.footer a.Cbtn-danger:hover{
     $conn=mysqli_connect('118.185.43.122','0187cs161025','sistec','0187cs161025'); 
     if(isset($_POST['submit']))
     {
-   	    $name=$_POST['username'];
+    //	var_dump($_POST);exit();
+   	    $userName=$_POST['username'];
    	    //image file type  
 		$name= $_FILES['file1']['name'];
 		$tmp_name= $_FILES['file1']['tmp_name'];
@@ -260,68 +279,33 @@ div.footer a.Cbtn-danger:hover{
 		        }
 		    }
 		}
-		$userID='123';
-		$group='123';
-		$group_option='1'; 
-         $qry="INSERT INTO `tbl_friend`(`userID`, `userName`, `img`, `group`, `group_option`) VALUES ('$userID','$name','".$name."','$group','$group_option');";
+		$userID=uniqid();
+		$groupCode='';
+		$group_option=$_POST['group_option']; 		
+		if ($_POST['group_option']=="no") {
+			$groupCode='';
+		}else if($_POST['groupCode']!=""){
+			$groupCode=$_POST['groupCode'];
+		}else{
+			$groupCode=uniqid();
+		}
+
+         $qry="INSERT INTO `tbl_friend`(`userID`, `userName`, `img`, `groupCode`, `group_option`) VALUES ('$userID','$userName','".$name."','$groupCode','$group_option');";
 		  $con1=mysqli_query($conn,$qry);
-		   if($con1==true) 
-		   {
-		       ?>
-		            <script type="text/javascript">
-		            	alert("DATA INSERTED...!");
-		            </script>
-		       <?php
-		   } 
-		   else
-		   {
-		   	   ?>
-		          <script type="text/javascript">
-		          	alert("no data insert...!");
-		          </script>   
-		   	  <?php
-		      header("Location: index.php");
-		   }
+		  if ($con1==true) {
+		  	# code...
+		  }
 
    }
 ?>
   <script type="text/javascript">
-		$(document).ready(function() {
-			var userID         = "<?php echo $userID; ?>";
-				$.ajax({
-					type: "POST",
-					url:'https://booosts.com/home/getUserInformation',     
-					data: {'userID': userID},
-					dataType: 'JSON',
-					success: function (data) {
-					var html_content = '';
-					var length = data.length;
-					if(data.length>0){
-						for(var i=0; i<length; i++){
+		$(document).on('click','.statusClass',function() {
+			var groupCode=$(this).attr("data-groupCode");
+			var group_option=$(this).attr("data-group-option");
+			$("#groupCode").val(groupCode);
+			$("#group_option").val(group_option);
+			$("#myModal").modal("show");
 
-							html_content += '<div class="stats">'+
-
-                            '<div>'+
-                                ' <strong>INVITED</strong> 3098'+
-                            ' </div>'+
-
-                             '<div>'+
-                                ' <strong>JOINED</strong> 562'+
-                            ' </div>'+
-
-                            ' <div>'+
-                                ' <strong>DECLINED</strong> 182'+
-                            '</div>'+
-
-                         '</div>';
-								
-						}
-					}
-					$('#contentSearchID').html(html_content);		
-
-					}
-					
-				});
 
 		});
 
