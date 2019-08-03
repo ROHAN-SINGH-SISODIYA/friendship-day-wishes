@@ -1,3 +1,11 @@
+<?php
+       $userID="";
+       if (isset($_GET['userID'])) {
+      		 $userID=$_GET["userID"];
+       }
+ ?>
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -142,21 +150,13 @@ div.footer a.Cbtn-danger:hover{
                         <div class="banner-img">
                             <img src="download.jpeg" alt="Image 1">
                         </div>
-                        <div class="stats">
 
-                            <div>
-                                <strong>INVITED</strong> 3098
-                            </div>
-
-                            <div>
-                                <strong>JOINED</strong> 562
-                            </div>
-
-                            <div>
-                                <strong>DECLINED</strong> 182
-                            </div>
-
+                        <div id="contentSearchID">
+                        	
                         </div>
+
+
+                        
 
                         <div class="stats">
 
@@ -190,32 +190,126 @@ div.footer a.Cbtn-danger:hover{
 
                         </div>
                         <div class="footer">
-                        	<a href=""><button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button></a>
-                        	         <div id="myModal" class="modal fade" role="dialog">
-									  <div class="modal-dialog">
 
-									    <!-- Modal content-->
-									    <div class="modal-content">
-									      <div class="modal-header">
-									        <button type="button" class="close" data-dismiss="modal">&times;</button>
-									        <h4 class="modal-title">Modal Header</h4>
-									      </div>
-									      <div class="modal-body">
-									        <p>Some text in the modal.</p>
-									      </div>
-									      <div class="modal-footer">
-									        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-									      </div>
-									    </div>
-
-									  </div>
-									</div>
+                            <a href="#" class="btn btn-success" data-toggle="modal" data-target="#myModal">Group Share</a>
+                            <a href="#" class="Cbtn Cbtn-danger">personal Share</a>
                         </div>
                     </div>
                 </div> 
             </div>
         </div>
     </div>
-  
+
+
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">JOIN AND ADD FRIENDS</h4>
+        </div>
+        <div class="modal-body">
+               <form method="post" enctype="multipart/form-data">
+					  <div class="form-group">
+					    <label for="exampleInputEmail1">ENTER YOUR NAME</label>
+					    <input type="text" name="username" class="form-control" placeholder="Enter Name">
+					  </div>
+					  <div class="form-group">
+					    <label for="exampleInputPassword1">PHOTO</label>
+					    <input type="file" name="file1" class="form-control" placeholder="Upload file">
+					  </div>
+					  <button type="submit" name="submit" class="btn btn-primary">Join</button>
+				</form>
+        </div>
+      </div>
+  </div>
+</div>
 </body>
 </html>
+<?php
+    $conn=mysqli_connect('118.185.43.122','0187cs161025','sistec','0187cs161025'); 
+    if(isset($_POST['submit']))
+    {
+   	    $name=$_POST['username'];
+   	    //image file type  
+		$name= $_FILES['file1']['name'];
+		$tmp_name= $_FILES['file1']['tmp_name'];
+		if (isset($name)) 
+		{ 
+		  $path= 'images/';
+		  if (!empty($name))
+		    {
+		        if (move_uploaded_file($tmp_name, $path.$name)) 
+		        {
+		        
+		        }
+		    }
+		}
+		$userID='123';
+		$group='123';
+		$group_option='1'; 
+         $qry="INSERT INTO `tbl_friend`(`userID`, `userName`, `img`, `group`, `group_option`) VALUES ('$userID','$name','".$name."','$group','$group_option');";
+		  $con1=mysqli_query($conn,$qry);
+		   if($con1==true) 
+		   {
+		       ?>
+		            <script type="text/javascript">
+		            	alert("DATA INSERTED...!");
+		            </script>
+		       <?php
+		   } 
+		   else
+		   {
+		   	   ?>
+		          <script type="text/javascript">
+		          	alert("no data insert...!");
+		          </script>   
+		   	  <?php
+		      header("Location: index.php");
+		   }
+
+   }
+?>
+  <script type="text/javascript">
+		$(document).ready(function() {
+			var userID         = "<?php echo $userID; ?>";
+				$.ajax({
+					type: "POST",
+					url:'https://booosts.com/home/getUserInformation',     
+					data: {'userID': userID},
+					dataType: 'JSON',
+					success: function (data) {
+					var html_content = '';
+					var length = data.length;
+					if(data.length>0){
+						for(var i=0; i<length; i++){
+
+							html_content += '<div class="stats">'+
+
+                            '<div>'+
+                                ' <strong>INVITED</strong> 3098'+
+                            ' </div>'+
+
+                             '<div>'+
+                                ' <strong>JOINED</strong> 562'+
+                            ' </div>'+
+
+                            ' <div>'+
+                                ' <strong>DECLINED</strong> 182'+
+                            '</div>'+
+
+                         '</div>';
+								
+						}
+					}
+					$('#contentSearchID').html(html_content);		
+
+					}
+					
+				});
+
+		});
+
+  </script>
