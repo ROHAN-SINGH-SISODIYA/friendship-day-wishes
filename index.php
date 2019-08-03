@@ -1,6 +1,8 @@
 <?php
        $conn=mysqli_connect('118.185.43.122','0187cs161025','sistec','0187cs161025'); 
        $userID="";$groupCode="";
+       				 $rowArray = array();
+
        if (isset($_GET['userID']))
        {
       		     $userID=$_GET["userID"];
@@ -12,7 +14,6 @@
 				 $result = mysqli_query($conn, $sql);
       		 	 //var_dump($sql);exit();
 				 $i=0;
-				 $rowArray = array();
 				 if (mysqli_num_rows($result)>0) {
 				 while ($row = mysqli_fetch_assoc($result)) {
 					    	$rowArray[$i]['userID']=$row['userID'];
@@ -221,7 +222,17 @@ div.footer a.Cbtn-danger:hover{
                             <a  class="Cbtn Cbtn-danger statusClass" data-groupCode="" data-group-option="no">Person</a>
                         </div>
                          <div class="footer">
-                            <a  class="btn btn-success " data-toggle="modal"   data-groupCode="" data-group-option="yes">WhAtSAPP SHARE</a>
+                          <?php if(count($rowArray)>0){
+                        	if($rowArray[0]['group_option']=="yes"){
+                        		echo '
+ 								<a class="btn btn-success " id="share"  data-url="http://118.185.43.122/0187cs161025/friendship-day-wishes/?userID=5d45e4837a971&groupCode='.$rowArray[0]['groupCode'].'" >SHARE</a>
+                        		';
+                        	}else{
+                        		echo '
+ 								<a class="btn btn-success " id="share"  data-url="http://118.185.43.122/0187cs161025/friendship-day-wishes/?userID='.$rowArray[0]['userID'].'" >SHARE</a>
+                        		';
+                        	}
+                        }?>
                         </div>
                     </div>
                 </div> 
@@ -240,7 +251,7 @@ div.footer a.Cbtn-danger:hover{
           <h4 class="modal-title">JOIN AND ADD FRIENDS</h4>
         </div>
         <div class="modal-body">
-               <form method="post" enctype="multipart/form-data">
+               <form method="post" enctype="multipart/form-data" action="insert.php">
 					  <div class="form-group">
 					    <label for="exampleInputEmail1">ENTER YOUR NAME</label>
 					    <input type="text" name="username" class="form-control" placeholder="Enter Name">
@@ -259,46 +270,6 @@ div.footer a.Cbtn-danger:hover{
 </div>
 </body>
 </html>
-<?php
-    $conn=mysqli_connect('118.185.43.122','0187cs161025','sistec','0187cs161025'); 
-    if(isset($_POST['submit']))
-    {
-    //	var_dump($_POST);exit();
-   	    $userName=$_POST['username'];
-   	    //image file type  
-		$name= $_FILES['file1']['name'];
-		$tmp_name= $_FILES['file1']['tmp_name'];
-		if (isset($name)) 
-		{ 
-		  $path= 'images/';
-		  if (!empty($name))
-		    {
-		        if (move_uploaded_file($tmp_name, $path.$name)) 
-		        {
-		        
-		        }
-		    }
-		}
-		$userID=uniqid();
-		$groupCode='';
-		$group_option=$_POST['group_option']; 		
-		if ($_POST['group_option']=="no") {
-			$groupCode='';
-		}else if($_POST['groupCode']!=""){
-			$groupCode=$_POST['groupCode'];
-		}else{
-			$groupCode=uniqid();
-		}
-
-         $qry="INSERT INTO `tbl_friend`(`userID`, `userName`, `img`, `groupCode`, `group_option`) VALUES ('$userID','$userName','".$name."','$groupCode','$group_option');";
-
-		  $con1=mysqli_query($conn,$qry);
-		  if ($con1==true) {
-		  	# code...
-		  }
-
-   }
-?>
   <script type="text/javascript">
 		$(document).on('click','.statusClass',function() {
 			var groupCode=$(this).attr("data-groupCode");
@@ -309,5 +280,14 @@ div.footer a.Cbtn-danger:hover{
 
 
 		});
+		$(document).on('click','#share',function() {
+			var url=$(this).attr("data-url");
+				navigator.share({
+				  title: "knackbout",
+				  text: 'Happy friendship day',
+				  url: url,
+				});
+		});
+ // share the URL of MDN
 
   </script>
