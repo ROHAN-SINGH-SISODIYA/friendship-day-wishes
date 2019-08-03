@@ -291,6 +291,7 @@ div.footer a.Cbtn-danger:hover{
 		}
 
          $qry="INSERT INTO `tbl_friend`(`userID`, `userName`, `img`, `groupCode`, `group_option`) VALUES ('$userID','$userName','".$name."','$groupCode','$group_option');";
+
 		  $con1=mysqli_query($conn,$qry);
 		  if ($con1==true) {
 		  	# code...
