@@ -260,9 +260,9 @@ div.footer a.Cbtn-danger:hover{
 		        }
 		    }
 		}
-		$userID='123';
-		$group='123';
-		$group_option='1'; 
+		$userID=uniqid();
+		$group=uniqid();
+		$group_option='yes'; 
          $qry="INSERT INTO `tbl_friend`(`userID`, `userName`, `img`, `group`, `group_option`) VALUES ('$userID','$name','".$name."','$group','$group_option');";
 		  $con1=mysqli_query($conn,$qry);
 		   if($con1==true) 
