@@ -1,21 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Friendship-day-wishes</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+	  <title>Friendship-day-wishes</title>
+	   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-  <style type="text/css">
-  	/*	Reset & General
----------------------------------------------------------------------- */
+	  <style type="text/css">
+  	
 * { margin: 0px; padding: 0px; }
 body {
 	background: #ecf1f5;
 	font:14px "Open Sans", sans-serif; 
 	text-align:center;
 }
-
 .tile{
 	width: 100%;
 	background:#fff;
@@ -143,9 +142,6 @@ div.footer a.Cbtn-danger:hover{
                         <div class="banner-img">
                             <img src="download.jpeg" alt="Image 1">
                         </div>
-
-
-
                         <div class="stats">
 
                             <div>
@@ -193,15 +189,33 @@ div.footer a.Cbtn-danger:hover{
                             </div>
 
                         </div>
-
                         <div class="footer">
-                            <a href="#" class="btn btn-success">Group Share</a>
-                            <a href="#" class="Cbtn Cbtn-danger">personal Share</a>
+                        	<a href=""><button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button></a>
+                        	         <div id="myModal" class="modal fade" role="dialog">
+									  <div class="modal-dialog">
+
+									    <!-- Modal content-->
+									    <div class="modal-content">
+									      <div class="modal-header">
+									        <button type="button" class="close" data-dismiss="modal">&times;</button>
+									        <h4 class="modal-title">Modal Header</h4>
+									      </div>
+									      <div class="modal-body">
+									        <p>Some text in the modal.</p>
+									      </div>
+									      <div class="modal-footer">
+									        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+									      </div>
+									    </div>
+
+									  </div>
+									</div>
                         </div>
                     </div>
                 </div> 
             </div>
         </div>
     </div>
+  
 </body>
 </html>
